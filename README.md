@@ -6,7 +6,7 @@ geolocation.
 
 Built on Bluemix
 
-[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://example.com)
+[![Deploy to Bluemix](https://bluemix.net/deploy/button.png)](https://bluemix.net/deploy?repository=https://github.com/myAmericaDevSummit2015/RecCollector)
 
 #### Introduction
 RecCollector is a project that began its life as a hackathon effort by a team
@@ -46,6 +46,7 @@ A proof of concept, mobile-first web client is currently under developement.
 - Install Node.js and Npm
 - In working directory, run "npm install"
 - Run application with "npm start"
+- Test with "npm test"
 
 ###### Notes
 - HTTP Basic Authentication is required for an Access Token at /token.
