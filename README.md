@@ -1,8 +1,8 @@
 ## RecCollector
 A unified Application Programming Interface (API) server built around various
 API's oriented towards providing useful data that correlates to core 
-information pulled from the Recreation Information Database (RIDB) by
-geolocation.
+information pulled by geolocation from the Recreation Information Database 
+(RIDB).
 
 Built on Bluemix
 
@@ -59,6 +59,7 @@ Feel free to contribute using both Github's Issues and Pull Request. Specs are
 expected. If you stick to code conventions, it would be appreciated.
 
 ###### Currently Implemented API's
+- APIs (Core): /api
 - RIDB (Core): /facilities, /recreational_areas
 - OpenWeatherMap: /current, /forecast
 - Watson Text-To-Speech: /text_to_speech
