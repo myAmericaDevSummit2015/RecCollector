@@ -6,7 +6,9 @@ var renderNotFound = function(callback) {
 };
 
 var render = function(api, callback) {
-    return callback(null, {api: api});
+    var header = {'Access-Control-Allow-Origin': '*'};
+
+    return callback(null, {api: api}, {header: header});
 };
 
 var find = function(name, next, callback) {

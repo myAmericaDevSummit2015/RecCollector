@@ -45,7 +45,14 @@ var render = function(credentials, callback) {
         username: credentials.username
     };
 
-    return callback(null, message, {});
+    var headers = {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Method': 'GET',
+        'Access-Control-Allow-Credentials': 'true',
+        'Access-Control-Allow-Header', 'Authorization, Content-Type'
+    };
+
+    return callback(null, message, {headers: headers});
 };
 
 var TokenController = {
