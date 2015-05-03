@@ -45,14 +45,7 @@ var render = function(credentials, callback) {
         username: credentials.username
     };
 
-    var headers = {
-        'Access-Control-Allow-Origin': '*',
-        'Access-Control-Allow-Method': 'GET',
-        'Access-Control-Allow-Credentials': 'true',
-        'Access-Control-Allow-Header', 'Authorization, Content-Type'
-    };
-
-    return callback(null, message, {headers: headers});
+    return callback(null, message);
 };
 
 var TokenController = {
@@ -81,8 +74,6 @@ var TokenController = {
             }
         } else {
             // TODO: We should render 401
-            // set header = {'WWW-Authenticate': 'Basic realm="Tokens"'};
-            // ApiHelper.renderHttpNotAuthorized(headers);
             throw new Error('Missing HTTP Basic Authentication header');
         }
     }
