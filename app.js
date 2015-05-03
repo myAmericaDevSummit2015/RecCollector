@@ -5,10 +5,12 @@ var globals = require('./config/globals'),
     connect = require('connect'),
     bodyParser = require('body-parser'),
     rest = require('connect-rest'),
+    // TODO: Remove Settings and break into its parts
     Settings = require('./config/settings'),
     Database = require('./config/database'),
     Seeds = require('./config/seeds'),
     Authentication = require('./config/authentication'),
+    CrossDomain = require('./config/crossDomain'),
     Routes = require('./config/routes');
 
 var app = connect()
@@ -32,6 +34,7 @@ var initialize = function() {
     };
 
     var initRoutes = function() {
+        CrossDomain.apply();
         Routes.apply(app, rest);
     };
 
