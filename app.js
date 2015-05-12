@@ -34,7 +34,7 @@ var initialize = function() {
     };
 
     var initRoutes = function() {
-        CrossDomain.apply();
+        CrossDomain.apply(app);
         Routes.apply(app, rest);
     };
 
@@ -46,7 +46,7 @@ var initialize = function() {
 
 var start = function() {
     var host = (process.env.VCAP_APP_HOST || 'localhost');
-    var port = (process.env.VCAP_APP_PORT || 3000);
+    var port = (process.env.VCAP_APP_PORT || 3001);
 
     var listen = function() {
         app.listen(port, host);
