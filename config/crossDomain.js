@@ -5,6 +5,7 @@ module.exports.apply = function(app) {
         methods: ['GET', 'POST', 'PUT'],
         headers: [
             'Authorization',
+            'x-access-token'
         ],
         credentials: false
     };
