@@ -5,7 +5,7 @@ var request = require('request'),
 var endpoints = {
     current: {
         handleResponse: function(error, response, body) {
-            Helper.processError(error);
+            Helper.processError(error, OpenWeatherMap.callback);
             ApiHelper.processResponse(response, body, OpenWeatherMap);
         },
         fetch: function(coordinates) {
@@ -22,7 +22,7 @@ var endpoints = {
     },
     forecast: {
         handleResponse: function(error, response, body) {
-            Helper.processError(error);
+            Helper.processError(error, OpenWeatherMap.callback);
             ApiHelper.processResponse(response, body, OpenWeatherMap);
         },
         fetch: function(coordinates) {

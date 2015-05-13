@@ -5,7 +5,7 @@ var request = require('request'),
 var endpoints = {
     facilites: {
         handleResponse: function(error, response, body) {
-            Helper.processError(error);
+            Helper.processError(error, RIDB.callback);
             ApiHelper.processResponse(response, body, RIDB);
         },
         fetch: function(coordinates, radius, limit) {
@@ -28,7 +28,7 @@ var endpoints = {
     },
     recreationAreas: {
         handleResponse: function(error, response, body) {
-            Helper.processError(error);
+            Helper.processError(error, RIDB.callback);
             ApiHelper.processResponse(response, body, RIDB);
         },
         fetch: function(coordinates, radius, limit) {

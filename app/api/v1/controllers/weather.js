@@ -16,7 +16,11 @@ var fetch = function(api) {
 
             break;
         default:
-            throw new Error(WeatherController.type + ' is not a valid type');
+            var message = WeatherController.type + ' is not a valid type';
+            var unprocessable = new Error(message);
+            unprocessable.statusCode = 422;
+
+            return callback(unprocessable);
     }
 };
 
@@ -25,8 +29,12 @@ var WeatherController = {
     coordinates: null,
     callback: null,
     read: function(request, content, callback) {
-        // TODO: Replace with HTTP Error
-        if(!request.user) throw new Error('Unauthorized');
+        if(!request.user) {
+            var unauthorized = new Error('Unauthorized');
+            unauthorized.statusCode = 401;
+
+            return callback(unauthorized);
+        }
 
         WeatherController.type = request.params.type;
         WeatherController

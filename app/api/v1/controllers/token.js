@@ -52,29 +52,44 @@ var TokenController = {
     read: function(request, content, callback) {
         var authorizationHeader = request.headers.authorization;
 
+        var message;
+        var unprocessable;
+
         if(authorizationHeader) {
             var credentials = parseCredentials(authorizationHeader);
 
             if(credentials) {
                 var handleAuthentication = function(error, isMatch) {
-                    if(error) throw new Error(error); // TODO: Make an HTTP Response
+                    if(error) {
+                        error.statusCode = 500;
+
+                        return callback(error);
+                    }
 
                     if(isMatch) {
                         render(credentials, callback);
                     } else {
-                        // TODO: Render HTTP Error
-                        throw new Error('Invalid credentials');
+                        var forbidden = new Error('Invalid credentials');
+                        forbidden.statusCode = 403;
+
+                        return callback(forbidden);
                     }
                 };
 
                 User.authenticate(credentials, handleAuthentication);
             } else {
-                // TODO: Render HTTP Error
-                throw new Error('Missing HTTP Basic Authentication header');
+                message = 'Missing HTTP Basic Authentication credentials';
+                unprocessable = new Error(message);
+                unprocessable.statusCode = 422;
+
+                return callback(unprocessable);
             }
         } else {
-            // TODO: We should render 401
-            throw new Error('Missing HTTP Basic Authentication header');
+            message = 'Missing HTTP Basic Authentication header';
+            unprocessable = new Error(message);
+            unprocessable.statusCode = 422;
+
+            return callback(unprocessable);
         }
     }
 };
