@@ -2,7 +2,7 @@ var Apis = require(__base + 'app/lib/apis'),
     GeolocationHelper = require(__base + 'app/lib/geolocationHelper');
 
 var renderResponse = function(data) {
-    RIDBController.callback(null, data, {headers: {'Access-Control-Allow-Origin': '*'}});
+    RIDBController.callback(null, data);
 };
 
 var fetch = function(api) {

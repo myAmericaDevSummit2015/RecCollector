@@ -5,10 +5,12 @@ var globals = require('./config/globals'),
     connect = require('connect'),
     bodyParser = require('body-parser'),
     rest = require('connect-rest'),
+    // TODO: Remove Settings and break into its parts
     Settings = require('./config/settings'),
     Database = require('./config/database'),
     Seeds = require('./config/seeds'),
     Authentication = require('./config/authentication'),
+    CrossDomain = require('./config/crossDomain'),
     Routes = require('./config/routes');
 
 var app = connect()
@@ -20,6 +22,7 @@ var initialize = function() {
 
     var initAuthentication = function() {
         Authentication.apply(app);
+        CrossDomain.apply(app);
     };
 
     var initSettings = function() {
@@ -43,7 +46,7 @@ var initialize = function() {
 
 var start = function() {
     var host = (process.env.VCAP_APP_HOST || 'localhost');
-    var port = (process.env.VCAP_APP_PORT || 3000);
+    var port = (process.env.VCAP_APP_PORT || 3001);
 
     var listen = function() {
         app.listen(port, host);
