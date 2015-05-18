@@ -39,9 +39,19 @@ var render = function(request, response) {
 
 module.exports = {
     read: function(request, response) {
-        // TODO: Render HTTP Error
-        if(!request.user) throw new Error('Unauthorized');
-        if(!request.params.text) throw new Error('Missing text param');
+        if(!request.user) {
+            var unauthorized = new Error('Unauthorized');
+            unauthorized.statusCode = 401;
+
+            return callback(unauthorized);
+        }
+
+        if(!request.params.text) {
+            var unproccesable = new Error('Missing text param');
+            unprocessable.statusCode = 422;
+
+            return callback(unprocessable);
+        }
         
         initTextToSpeech();
 

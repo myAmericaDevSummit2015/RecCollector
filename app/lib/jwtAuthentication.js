@@ -24,8 +24,9 @@ var validateToken = function(request, response, next) {
             .decode(token, __JWT_SECRET);
 
         if(decodedToken.exp <= Date.now()) {
-            // TODO: HTTP Error (exiquio)
-            throw new Error('Access token has expired');
+            response.statusCode = 403;
+            // Correct? (exiquio)
+            response.end('Access token has expired');
         }
 
         // TODO: use _id (exiquio)

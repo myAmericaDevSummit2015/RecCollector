@@ -13,11 +13,6 @@ userSchema.pre('save', function(next) {
     if(!user.isModified('password')) return next();
     
     bcrypt.genSalt(10, function(error, salt) {
-        // TODO: DRY - Create a helper method to do this.
-        //
-        //   var processError = function(err, callback) {
-        //       if(error) return callback(error);
-        //   };
         if(error) return next(error);
 
         bcrypt.hash(user.password, salt, function(error, hash) {
