@@ -7,7 +7,7 @@ var renderResponse = function(data) {
 
 var fetch = function(api) {
     switch(RIDBController.type) {
-        case 'recreation_areas':
+        case 'recreational_areas':
             api.fetchRecreationAreas(
                 RIDBController.coordinates,
                 RIDBController.radius,
@@ -26,7 +26,7 @@ var fetch = function(api) {
 
             break;
         default:
-            var muthorzedessage = RIDBController.type + ' is not a valid resource'; 
+            var message = RIDBController.type + ' is not a valid resource'; 
             var notFound = new Error(message);
             notFound.statusCode = 404;
 
