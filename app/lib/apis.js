@@ -3,68 +3,43 @@ var mongoose = require('mongoose'),
     OpenWeatherMap = require('./openWeatherMap'),
     RIDB = require('./ridb');
 
-var yieldTo = function(api) {
-    Apis.callback(api);
-};
+var implement = function(name, options, callback, next) {
+    var addOperations = function(api) {
+        switch(api.name) {
+            case 'OpenWeatherMap':
+                api.fetchCurrent = OpenWeatherMap.fetchCurrent;
+                api.fetchForecast = OpenWeatherMap.fetchForecast;
 
-var assign = function(api) {
-    switch(api.name) {
-        case 'OpenWeatherMap':
-            OpenWeatherMap.api = api;
+                break;
+            case 'RIDB':
+                api.fetchRecreationAreas = RIDB.fetchRecreationAreas;
+                api.fetchFacilities = RIDB.fetchFacilities;
 
-            break;
-        case 'RIDB':
-            RIDB.api = api;
+                break;
+            default:
+                throw new Error('Failed to add operations: ' + api.name);
+        }
+    };
 
-            break;
-        default:
-            throw new Error('Failed to assign api: ' + api.name);
-    }
-};
+    var yieldTo = function(api) {
+        callback(api, options, next);
+    };
 
-var addOperations = function(api) {
-    switch(api.name) {
-        case 'OpenWeatherMap':
-            api.fetchCurrent = OpenWeatherMap.fetchCurrent;
-            api.fetchForecast = OpenWeatherMap.fetchForecast;
+    var set = function(error, api) {
+        if(error) {
+            throw new Error(error);
+        } else {
+            addOperations(api);
+            yieldTo(api);
+        }
+    };
 
-            break;
-        case 'RIDB':
-            api.fetchRecreationAreas = RIDB.fetchRecreationAreas;
-            api.fetchFacilities = RIDB.fetchFacilities;
-
-            break;
-        default:
-            throw new Error('Failed to add operations: ' + api.name);
-    }
-};
-
-var addToModule = function(api) {
-    Apis.api = api;
-};
-
-var set = function(error, api) {
-    if(error) {
-        throw new Error(error);
-    } else {
-        assign(api);
-        addOperations(api);
-        addToModule(api);
-        yieldTo(api);
-    }
-};
-
-var implement = function(name) {
     Api.findOne({name: name}, set);
 };
 
 var Apis = {
-    api: null,
-    callback: null,
-    get: function(name, callback) {
-        Apis.callback = callback;
-
-        implement(name);
+    get: function(name, options, callback, next) {
+        implement(name, options, callback, next);
     }
 };
 

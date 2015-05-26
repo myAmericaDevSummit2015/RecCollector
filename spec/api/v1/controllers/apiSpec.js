@@ -11,7 +11,7 @@ describe('APIController', function() {
 
         before(function() {
             Factory.clear();
-            
+
             api = Factory.build('api');
 
             var renderNotFound = function() {
@@ -67,7 +67,10 @@ describe('APIController', function() {
                 var params = {name: api.name};
                 var request = {body: null, params: params, user: {}};
                 var content = request.body;
-                var callback = function(ignore, result) {
+                var callback = function(error, result) {
+                    console.log('test');
+                    console.log(error);
+                    console.log(result);
                     expect(api).toEqual(result.api);
 
                     done();

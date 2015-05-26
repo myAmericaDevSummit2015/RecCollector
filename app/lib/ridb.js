@@ -4,11 +4,7 @@ var request = require('request'),
 
 var endpoints = {
     facilites: {
-        handleResponse: function(error, response, body) {
-            Helper.processError(error, RIDB.callback);
-            ApiHelper.processResponse(response, body, RIDB);
-        },
-        fetch: function(coordinates, radius, limit) {
+        fetch: function(coordinates, radius, limit, callback, next) {
             var endpoint = [
                 'https://ridb.recreation.gov/api/v1/facilities?latitude=',
                 coordinates.latitude,
@@ -22,16 +18,11 @@ var endpoints = {
                 __RIDB_KEY
             ].join('');
 
-
-            ApiHelper.fetchEndpoint(endpoint, endpoints.facilites);
+            ApiHelper.fetchEndpoint(endpoint, callback, next);
         }
     },
     recreationAreas: {
-        handleResponse: function(error, response, body) {
-            Helper.processError(error, RIDB.callback);
-            ApiHelper.processResponse(response, body, RIDB);
-        },
-        fetch: function(coordinates, radius, limit) {
+        fetch: function(coordinates, radius, limit, callback, next) {
             var endpoint = [
                 'https://ridb.recreation.gov/api/v1/recareas?latitude=',
                 coordinates.latitude,
@@ -45,26 +36,35 @@ var endpoints = {
                 __RIDB_KEY
             ].join('');
 
-
-            ApiHelper.fetchEndpoint(endpoint, endpoints.recreationAreas);
+            ApiHelper.fetchEndpoint(endpoint, callback, next);
         }
     }
 };
 
-var fetch = function(domain, coordinates, radius, limit, callback) {
-    RIDB.callback = callback;
-
-    domain.fetch(coordinates, radius, limit);
+var fetch = function(domain, coordinates, radius, limit, callback, next) {
+    domain.fetch(coordinates, radius, limit, callback, next);
 };
 
 RIDB = {
-    api: null,
-    callback: null,
-    fetchFacilities: function(coordinates, radius, limit, callback) {
-        fetch(endpoints.facilites, coordinates, radius, limit, callback);
+    fetchFacilities: function(options, callback, next) {
+        fetch(
+            endpoints.facilites,
+            options.coordinates,
+            options.radius,
+            options.limit,
+            callback,
+            next
+        );
     },
-    fetchRecreationAreas: function(coordinates, radius, limit, callback) {
-        fetch(endpoints.recreationAreas, coordinates, radius, limit, callback);
+    fetchRecreationAreas: function(options, callback, next) {
+        fetch(
+            endpoints.recreationAreas,
+            options.coordinates,
+            options.radius,
+            options.limit,
+            callback,
+            next
+        );
     }
 };
 

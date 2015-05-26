@@ -4,11 +4,7 @@ var request = require('request'),
 
 var endpoints = {
     current: {
-        handleResponse: function(error, response, body) {
-            Helper.processError(error, OpenWeatherMap.callback);
-            ApiHelper.processResponse(response, body, OpenWeatherMap);
-        },
-        fetch: function(coordinates) {
+        fetch: function(coordinates, callback, next) {
             var endpoint = [
                 'http://api.openweathermap.org/data/2.5/weather?lat=',
                 coordinates.latitude,
@@ -17,15 +13,11 @@ var endpoints = {
                 '&units=imperial'
             ].join('');
 
-            ApiHelper.fetchEndpoint(endpoint, endpoints.current);
+            ApiHelper.fetchEndpoint(endpoint, callback, next);
         }
     },
     forecast: {
-        handleResponse: function(error, response, body) {
-            Helper.processError(error, OpenWeatherMap.callback);
-            ApiHelper.processResponse(response, body, OpenWeatherMap);
-        },
-        fetch: function(coordinates) {
+        fetch: function(coordinates, callback, next) {
             var endpoint = [
                 'http://api.openweathermap.org/data/2.5/forecast/daily?lat=',
                 coordinates.latitude,
@@ -36,25 +28,21 @@ var endpoints = {
                 '&units=imperial'
             ].join('');
 
-            ApiHelper.fetchEndpoint(endpoint, endpoints.forecast);
+            ApiHelper.fetchEndpoint(endpoint, callback, next);
         }
     }
 };
 
-var fetch = function(domain, coordinates, callback) {
-    OpenWeatherMap.callback = callback;
-
-    domain.fetch(coordinates);
+var fetch = function(domain, coordinates, callback, next) {
+    domain.fetch(coordinates, callback, next);
 };
 
 OpenWeatherMap = {
-    api: null,
-    callback: null,
-    fetchCurrent: function(coordinates, callback) {
-        fetch(endpoints.current, coordinates, callback);
+    fetchCurrent: function(options, callback, next) {
+        fetch(endpoints.current, options.coordinates, callback, next);
     },
-    fetchForecast: function(coordinates, callback) {
-        fetch(endpoints.forecast, coordinates, callback);
+    fetchForecast: function(options, callback, next) {
+        fetch(endpoints.forecast, options.coordinates, callback, next);
     }
 };
 
