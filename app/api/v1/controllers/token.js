@@ -36,7 +36,7 @@ var jwtToken = function(username) {
     return jwt.encode(tokenProperties, __JWT_SECRET);
 };
 
-var render = function(credentials, callback) {
+var render = function(credentials, next) {
     var token = jwtToken(credentials.username);
 
     var message = {
@@ -45,11 +45,11 @@ var render = function(credentials, callback) {
         username: credentials.username
     };
 
-    return callback(null, message);
+    return next(null, message);
 };
 
 var TokenController = {
-    read: function(request, content, callback) {
+    read: function(request, content, next) {
         var authorizationHeader = request.headers.authorization;
 
         var message;
@@ -63,16 +63,16 @@ var TokenController = {
                     if(error) {
                         error.statusCode = 500;
 
-                        return callback(error);
+                        return next(error);
                     }
 
                     if(isMatch) {
-                        render(credentials, callback);
+                        render(credentials, next);
                     } else {
                         var forbidden = new Error('Invalid credentials');
                         forbidden.statusCode = 403;
 
-                        return callback(forbidden);
+                        return next(forbidden);
                     }
                 };
 
@@ -82,14 +82,14 @@ var TokenController = {
                 unprocessable = new Error(message);
                 unprocessable.statusCode = 422;
 
-                return callback(unprocessable);
+                return next(unprocessable);
             }
         } else {
             message = 'Missing HTTP Basic Authentication header';
             unprocessable = new Error(message);
             unprocessable.statusCode = 422;
 
-            return callback(unprocessable);
+            return next(unprocessable);
         }
     }
 };

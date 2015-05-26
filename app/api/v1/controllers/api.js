@@ -1,37 +1,44 @@
 var API = require(__base + 'app/api/v1/models/api');
 
-var renderNotFound = function(callback) {
+var renderNotFound = function(next) {
     // TODO: Make these shared
     var notFound = new Error('Not found');
     notFound.statusCode = 404;
 
-    return callback(notFound);
+    return next(notFound);
 };
 
-var render = function(api, callback) {
-    return callback(null, {api: api});
+var renderInternalError = function(error, next) {
+    var internalError = new Error('Internal error: ' + error.message);
+    internalError.statusCode = 500;
+
+    return next(internalError);
 };
 
-var find = function(name, next, callback) {
+var render = function(api, next) {
+    return next(null, {api: api});
+};
+
+var find = function(name, callback, next) {
     API.findOne({name: name}, function(error, api) {
-        if(error) console.log('An error occured', error);
+        if(error) return renderInternalError(error, next);
 
-        if(!api) return renderNotFound(callback);
+        if(!api) return renderNotFound(next);
 
-        return next(api, callback);
+        return callback(api, next);
     });
 };
 
 module.exports = {
-    read: function(request, content, callback) {
+    read: function(request, content, next) {
         // TODO: Replace with HTTP Error
         if(!request.user) {
             var unauthorized = new Error('Unauthorized');
             unauthorized.statusCode = 401;
 
-            return callback(unauthorized);
+            return next(unauthorized);
         }
         
-        find(request.params.name, render, callback);
+        find(request.params.name, render, next);
     }
 };

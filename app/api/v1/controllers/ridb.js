@@ -1,47 +1,31 @@
 var Apis = require(__base + 'app/lib/apis'),
     GeolocationHelper = require(__base + 'app/lib/geolocationHelper');
 
-var renderResponse = function(data) {
-    RIDBController.callback(null, data);
-};
+var fetch = function(api, options, next) {
+    var render = function(data) {
+        next(null, data);
+    };
 
-var fetch = function(api) {
-    switch(RIDBController.type) {
+    switch(options.type) {
         case 'recreational_areas':
-            api.fetchRecreationAreas(
-                RIDBController.coordinates,
-                RIDBController.radius,
-                RIDBController.limit,
-                renderResponse
-            );
+            api.fetchRecreationAreas(options, render, next);
 
             break;
         case 'facilities':
-            api.fetchFacilities(
-                RIDBController.coordinates,
-                RIDBController.radius,
-                RIDBController.limit,
-                renderResponse
-            );
+            api.fetchFacilities(options, render, next);
 
             break;
         default:
-            var message = RIDBController.type + ' is not a valid resource'; 
+            var message = options.type + ' is not a valid resource'; 
             var notFound = new Error(message);
             notFound.statusCode = 404;
 
-            return callback(notFound);
+            return next(notFound);
     }
 };
 
-// TODO: Remove stuff from public scope that should be private (exiqiuo)
 var RIDBController = {
-    type: null,
-    coordinates: null,
-    radius: null,
-    limit: null,
-    callback: null,
-    read: function(request, content, callback) {
+    read: function(request, content, next) {
         // TODO: Replace with HTTP Error
         if(!request.user) {
             var unauthorized = new Error('Unauthorized');
@@ -50,14 +34,15 @@ var RIDBController = {
             return callback(unauthorized);
         }
 
-        RIDBController.type = request.params.type;
-        RIDBController
-            .coordinates = GeolocationHelper.parseCoordinates(request.params.coordinates);
-        RIDBController.radius = request.params.radius;
-        RIDBController.limit = request.params.limit;
-        RIDBController.callback = callback;
+        var options = {
+            type: request.params.type,
+            coordinates: GeolocationHelper
+                .parseCoordinates(request.params.coordinates),
+            radius: request.params.radius,
+            limit: request.params.limit
+        };
 
-        Apis.get('RIDB', fetch);
+        Apis.get('RIDB', options, fetch, next);
     }
 };
 

@@ -1,7 +1,5 @@
 var request = require('request');
-    // REVIEW: Why did this get pulled in? Should we piggy back it's methods?
-    // (exiquio)
-    //Helper = require('./helper');
+    Helper = require('./helper');
 
 module.exports = {
     raiseEndpointError: function(response, callback) {
@@ -15,14 +13,20 @@ module.exports = {
     success: function(response) {
         return response.statusCode == 200;
     },
-    processResponse: function(response, body, api) {
+    processResponse: function(response, body, callback, next) {
         if(this.success(response)) {
-            api.callback(body);
+            callback(body);
         } else {
-            this.raiseEndpointError(response, api.callback);
+            this.raiseEndpointError(response, next);
         }
     },
-    fetchEndpoint: function(endpoint, requestor) {
-        request(endpoint, requestor.handleResponse);
+    fetchEndpoint: function(endpoint, callback, next) {
+        var ApiHelper = this;
+        var handleResponse = function(error, response, body) {
+            Helper.processError(error, next);
+            ApiHelper.processResponse(response, body, callback, next);
+        };
+
+        request(endpoint, handleResponse);
     }
 };

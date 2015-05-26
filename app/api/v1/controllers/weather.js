@@ -1,18 +1,18 @@
 var Apis = require(__base + 'app/lib/apis'),
     GeolocationHelper = require(__base + 'app/lib/geolocationHelper');
 
-var renderResponse = function(data) {
-    WeatherController.callback(null, data);
-};
+var fetch = function(api, options, next) {
+    var render = function(data) {
+        next(null, data);
+    };
 
-var fetch = function(api) {
-    switch(WeatherController.type) {
+    switch(options.type) {
         case 'current':
-            api.fetchCurrent(WeatherController.coordinates, renderResponse);
+            api.fetchCurrent(options, render, next);
 
             break;
         case 'forecast':
-            api.fetchForecast(WeatherController.coordinates, renderResponse);
+            api.fetchForecast(options, render, next);
 
             break;
         default:
@@ -20,15 +20,12 @@ var fetch = function(api) {
             var unprocessable = new Error(message);
             unprocessable.statusCode = 422;
 
-            return callback(unprocessable);
+            return next(unprocessable);
     }
 };
 
 var WeatherController = {
-    type: null,
-    coordinates: null,
-    callback: null,
-    read: function(request, content, callback) {
+    read: function(request, content, next) {
         if(!request.user) {
             var unauthorized = new Error('Unauthorized');
             unauthorized.statusCode = 401;
@@ -36,12 +33,13 @@ var WeatherController = {
             return callback(unauthorized);
         }
 
-        WeatherController.type = request.params.type;
-        WeatherController
-            .coordinates = GeolocationHelper.parseCoordinates(request.params.coordinates);
-        WeatherController.callback = callback;
+        var options = {
+            type: request.params.type,
+            coordinates: GeolocationHelper
+                .parseCoordinates(request.params.coordinates)
+        };
 
-        Apis.get('OpenWeatherMap', fetch);
+        Apis.get('OpenWeatherMap', options, fetch, next);
     }
 };
 

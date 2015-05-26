@@ -20,8 +20,12 @@ describe('WeatherController', function() {
                 callback(null, apiObject);
             };
 
-            ApiHelper.fetchEndpoint = function(endpoint, requestor) {
-                requestor.handleResponse(null, {statusCode: 200}, {endpoint: endpoint});
+            ApiHelper.fetchEndpoint = function(endpoint, callback, next) {
+                var handleResponse = function(error, response, body) {
+                    ApiHelper.processResponse(response, body, callback, next);
+                };
+
+                handleResponse(null, {statusCode: 200}, {endpoint: endpoint});
             };
         });
 

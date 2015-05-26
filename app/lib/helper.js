@@ -7,7 +7,7 @@ module.exports = {
     },
     processError: function(error, callback) {
         if(error) {
-            this.raiseError(error);
+            this.raiseError(error, callback);
         }
     }
 };

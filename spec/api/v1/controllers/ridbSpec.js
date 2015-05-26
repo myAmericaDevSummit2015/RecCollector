@@ -23,8 +23,12 @@ describe('RIDBController', function() {
             // TODO: We should use the api object to pull this, not global (exiquio)
             global.__RIDB_KEY = 'key';
 
-            ApiHelper.fetchEndpoint = function(endpoint, requestor) {
-                requestor.handleResponse(null, {statusCode: 200}, {endpoint: endpoint});
+            ApiHelper.fetchEndpoint = function(endpoint, callback, next) {
+                var handleResponse = function(error, response, body) {
+                    ApiHelper.processResponse(response, body, callback, next);
+                };
+
+                handleResponse(null, {statusCode: 200}, {endpoint: endpoint});
             };
         });
 
@@ -36,14 +40,14 @@ describe('RIDBController', function() {
 
                 it('makes proper request to RIDB', function(done) {
                     var params = {
-                        type: 'recreation_areas',
+                        type: 'recreational_areas',
                         coordinates: '90.0,90.0',
                         radius: '100',
                         limit: '10'
                     };
                     var request = {body: null, params: params, user: {}};
                     var content = request.body;
-                    var callback = function(ingore, result) {
+                    var callback = function(error, result) {
                         expect(result.endpoint).toEqual(endpoint);
 
                         done();
@@ -67,7 +71,7 @@ describe('RIDBController', function() {
                     };
                     var request = {body: null, params: params, user: {}};
                     var content = request.body;
-                    var callback = function(ingore, result) {
+                    var callback = function(error, result) {
                         expect(result.endpoint).toEqual(endpoint);
 
                         done();
