@@ -22,7 +22,7 @@ pulled from RIDB.
 RecCollector is designed to be behavior driven, modular and in keeping with the
 traditions of the [Unix Philosophy] (http://www.ru.j-npcs.org/usoft/WWW/LJ/Articles/unixtenets.html).
 
-A proof of concept, mobile-first web client is currently under developement.
+Checkout [RecCollection] (https://github.com/myAmericaDevSummit2015/RecCollection), a proof of concept, mobile browser based web client.
 
 #### Dependencies
 - [Npm] (https://www.npmjs.com/)
