@@ -31,7 +31,9 @@ var render = function(request, response) {
     var options = {
         text: request.params.text,
         voice: 'VoiceEnUsMichael',
-        accept: 'audio/ogg; codecs=opus'
+        accept: 'audio/wav'
+        // NOTE: Bug in Chrome: https://code.google.com/p/chromium/issues/detail?id=482934
+        // accept: 'audio/ogg; codecs=opus'
     };
 
     synthesizeAndRender(options, request, response);
